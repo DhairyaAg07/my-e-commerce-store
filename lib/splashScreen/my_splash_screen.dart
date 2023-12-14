@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:users_app/mainScreens/home_screen.dart';
+import 'dart:async';
 
 
 class MySplashScreen extends StatefulWidget 
@@ -7,8 +9,22 @@ class MySplashScreen extends StatefulWidget
   State<MySplashScreen> createState() => _MySplashScreenState();
 }
 
+
 class _MySplashScreenState extends State<MySplashScreen> 
 {
+  splashScreenTimer(){
+    Timer(const Duration(seconds: 4),() async
+    {
+      Navigator.push(context, MaterialPageRoute(builder: (c)=>HomeScreen()));
+    });
+  }
+  
+  @override
+  void initState() //called automatically when user comes to this splash screen
+  {
+    super.initState();
+    splashScreenTimer();
+  }
   @override
   Widget build(BuildContext context) 
   {
@@ -27,10 +43,33 @@ class _MySplashScreenState extends State<MySplashScreen>
           ),
         ),
         
+        
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Image.asset('images/welcome.png'),
+          
+          child: Column(
+            mainAxisAlignment:MainAxisAlignment.center ,
+            children: [
+              
+              
+              
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Image.asset('images/welcome.png'),
+              ),
+              
+              SizedBox(height: 10),
+              
+              Text("I Shop",
+              style: TextStyle(
+                fontSize:30,
+                letterSpacing: 3,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),),
+              
+              
+              
+            ],
           ),
         ),
       ),
