@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:users_app/widgets/custom_text_field.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RegistrationTabPage extends StatefulWidget {
   @override
@@ -30,6 +30,43 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
     });
     
   }
+  
+  
+  formValidation() async
+  {
+    if(imgXFile==null)   //if image is not selected
+    {
+      Fluttertoast.showToast(msg: "please select an image.");
+    }
+    
+    else // if image is selected
+    {
+    //   password is equal to confirm password
+      if (passwordEditingController.text==confirmPasswordEditingController.text)
+      {
+      //   check email, password , confirm password and name text fields
+        if(nameEditingController.text.isNotEmpty && emailEditingController.text.isNotEmpty 
+        && passwordEditingController.text.isNotEmpty && confirmPasswordEditingController.text.isNotEmpty)
+        {
+        //   upload image to storage
+        //   save the user info to firebase database
+        }
+        
+        else
+        {
+          Fluttertoast.showToast(msg: "please complete the form. Do not leave any text field empty");
+        }
+      }
+      else  //password is not equal to confirm password
+      {
+        Fluttertoast.showToast(msg: "passwords do not match");
+      }
+    }
+     
+  }
+  
+  
+  
   
   
   @override
@@ -118,7 +155,10 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
                 primary: Colors.pinkAccent,
                 padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
               ),
-              onPressed: () {},
+              onPressed: () 
+              {
+                formValidation();
+              },
               child: Text(
                 "Sign Up",
                 style: TextStyle(
