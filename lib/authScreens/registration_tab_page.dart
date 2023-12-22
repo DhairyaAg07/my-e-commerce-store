@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:users_app/widgets/custom_text_field.dart';
+import 'package:image_picker/image_picker.dart';
+
 
 class RegistrationTabPage extends StatefulWidget {
   @override
@@ -13,6 +16,22 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
   TextEditingController confirmPasswordEditingController =
       TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+
+ XFile? imgXFile;
+ final ImagePicker imagePicker=ImagePicker();
+  
+ getImageFromGallery() async
+  {
+    imgXFile= await imagePicker.pickImage(source: ImageSource.gallery);
+    
+    setState(() {
+      imgXFile;
+    });
+    
+  }
+  
+  
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -25,15 +44,19 @@ class _RegistrationTabPageState extends State<RegistrationTabPage> {
 
             //   get or capture image
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                getImageFromGallery();
+              },
               child: CircleAvatar(
                 radius: MediaQuery.of(context).size.width * 0.20,
                 backgroundColor: Colors.white,
-                child: Icon(
+                backgroundImage: imgXFile ==null? null: FileImage(File(imgXFile!.path)),
+                child: imgXFile==null? 
+                Icon(
                   Icons.add_photo_alternate,
                   color: Colors.grey,
                   size: MediaQuery.of(context).size.width * 0.20,
-                ),
+                ) : null,
               ),
             ),
 

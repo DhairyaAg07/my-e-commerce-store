@@ -1,9 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:users_app/authScreens/auth_screen.dart';
 import 'package:users_app/mainScreens/home_screen.dart';
 import 'package:users_app/splashScreen/my_splash_screen.dart';
 
-void main() {
+
+Future <void> main() async
+{
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
