@@ -168,7 +168,8 @@ class _MyDrawerState extends State<MyDrawer>
                   ),
                   onTap: ()
                   {
-
+                    FirebaseAuth.instance.signOut();
+                    Navigator.push(context, MaterialPageRoute(builder: (c) => MySplashScreen()));
                   },
                 ),
                 const Divider(
