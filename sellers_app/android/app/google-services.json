@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "585707863431",
+    "project_id": "clone-bae07",
+    "storage_bucket": "clone-bae07.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585707863431:android:93d2a90887ea0315d66722",
+        "android_client_info": {
+          "package_name": "com.example.sellers_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUgOsDOd459JceE4cKHJr6N8iHn_6oPq4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585707863431:android:367aecc374843139d66722",
+        "android_client_info": {
+          "package_name": "com.example.users_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUgOsDOd459JceE4cKHJr6N8iHn_6oPq4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
