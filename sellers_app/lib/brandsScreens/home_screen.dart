@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sellers_app/brandsScreens/upload_brands_screen.dart';
+import 'package:sellers_app/widgets/text_delegate_header_widget.dart';
 
 import '../widgets/my_drawer.dart';
 // import 'package:users_app/widgets/my_drawer.dart';
@@ -53,6 +54,14 @@ class _HomeScreenState extends State<HomeScreen>
                   Icons.add,
                   color: Colors.white,)
             ,)
+        ],
+      ),
+      body: CustomScrollView(
+        slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: TextDelegateHeaderWidget(title: "My Brands") ,
+          ),
         ],
       ),
     );
