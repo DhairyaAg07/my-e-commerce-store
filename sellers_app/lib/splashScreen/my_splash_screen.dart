@@ -4,7 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../authScreens/auth_screen.dart';
-import '../mainScreens/home_screen.dart';
+import '../brandsScreens/home_screen.dart';
+// import '../mainScreens/home_screen.dart';
 // import 'package:users_app/authScreens/auth_screen.dart';
 // import 'package:users_app/mainScreens/home_screen.dart';
 
@@ -21,7 +22,7 @@ class _MySplashScreenState extends State<MySplashScreen>
 {
   splashScreenTimer()
   {
-    Timer(const Duration(seconds: 4), () async
+    Timer(const Duration(seconds: 2), () async
     {
       //seller is already logged-in
       if(FirebaseAuth.instance.currentUser != null)

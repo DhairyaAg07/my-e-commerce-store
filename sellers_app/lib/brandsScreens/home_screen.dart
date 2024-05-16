@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sellers_app/brandsScreens/upload_brands_screen.dart';
 
 import '../widgets/my_drawer.dart';
 // import 'package:users_app/widgets/my_drawer.dart';
@@ -42,6 +43,17 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: ()
+              {
+                Navigator.push(context, MaterialPageRoute(builder: (c)=>UploadBrandsScreen()));
+              },
+              icon: const Icon(
+                  Icons.add,
+                  color: Colors.white,)
+            ,)
+        ],
       ),
     );
   }
