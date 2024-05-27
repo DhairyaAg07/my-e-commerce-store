@@ -1,1 +1,3 @@
 Makefile linguist-language=Ignore
+*.dart linguist-language=Dart
+*.flutter linguist-language=Flutter
