@@ -10,9 +10,7 @@ import 'package:sellers_app/splashScreen/my_splash_screen.dart';
 import 'package:sellers_app/widgets/progress_bar.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 
-
-class UploadItemsScreen extends StatefulWidget
-{
+class UploadItemsScreen extends StatefulWidget {
   Brands? model;
 
   UploadItemsScreen({this.model,});
@@ -21,11 +19,7 @@ class UploadItemsScreen extends StatefulWidget
   State<UploadItemsScreen> createState() => _UploadItemsScreenState();
 }
 
-
-
-
-class _UploadItemsScreenState extends State<UploadItemsScreen>
-{
+class _UploadItemsScreenState extends State<UploadItemsScreen> {
   XFile? imgXFile;
   final ImagePicker imagePicker = ImagePicker();
 
@@ -38,170 +32,121 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
   String downloadUrlImage = "";
   String itemUniqueId = DateTime.now().millisecondsSinceEpoch.toString();
 
+  // Save item info to Firestore
+  saveItemInfo() {
+    final sellerUid = sharedPreferences!.getString("uid");
+    final brandId = widget.model!.brandID;
 
-  saveBrandInfo()
-  {
     FirebaseFirestore.instance
         .collection("sellers")
-        .doc(sharedPreferences!.getString("uid"))
+        .doc(sellerUid)
         .collection("brands")
-        .doc(widget.model!.brandID)
+        .doc(brandId)
         .collection("items")
         .doc(itemUniqueId)
-        .set(
-        {
-          "itemID": itemUniqueId,
-          "brandID": widget.model!.brandID.toString(),
-          "sellerUID": sharedPreferences!.getString("uid"),
-          "sellerName": sharedPreferences!.getString("name"),
-          "itemInfo": itemInfoTextEditingController.text.trim(),
-          "itemTitle": itemTitleTextEditingController.text.trim(),
-          "longDescription": itemInfoTextEditingController.text.trim(),
-          "price": itemTitleTextEditingController.text.trim(),
-          "publishedDate": DateTime.now(),
-          "status": "available",
-          "thumbnailUrl": downloadUrlImage,
-        }).then((value)
-    {
-      FirebaseFirestore.instance
-          .collection("items")
-          .doc(itemUniqueId)
-          .set(
-          {
-            "itemID": itemUniqueId,
-            "brandID": widget.model!.brandID.toString(),
-            "sellerUID": sharedPreferences!.getString("uid"),
-            "sellerName": sharedPreferences!.getString("name"),
-            "itemInfo": itemInfoTextEditingController.text.trim(),
-            "itemTitle": itemTitleTextEditingController.text.trim(),
-            "longDescription": itemInfoTextEditingController.text.trim(),
-            "price": itemTitleTextEditingController.text.trim(),
-            "publishedDate": DateTime.now(),
-            "status": "available",
-            "thumbnailUrl": downloadUrlImage,
-          });
+        .set({
+      "itemID": itemUniqueId,
+      "brandID": brandId,
+      "sellerUID": sellerUid,
+      "sellerName": sharedPreferences!.getString("name"),
+      "itemInfo": itemInfoTextEditingController.text.trim(),
+      "itemTitle": itemTitleTextEditingController.text.trim(),
+      "longDescription": itemDescriptionTextEditingController.text.trim(),
+      "price": itemPriceTextEditingController.text.trim(),
+      "publishedDate": DateTime.now(),
+      "status": "available",
+      "thumbnailUrl": downloadUrlImage,
+    }).then((_) {
+      Fluttertoast.showToast(msg: "Item has been added successfully.");
+      setState(() {
+        uploading = false;
+      });
+      Navigator.push(context, MaterialPageRoute(builder: (c) => HomeScreen()));
     });
-
-    setState(() {
-      uploading = false;
-    });
-
-    Navigator.push(context, MaterialPageRoute(builder: (c)=> HomeScreen()));
   }
 
-  validateUploadForm() async
-  {
-    if(imgXFile != null)
-    {
-      if(itemInfoTextEditingController.text.isNotEmpty
-          && itemTitleTextEditingController.text.isNotEmpty
-          && itemDescriptionTextEditingController.text.isNotEmpty
-          && itemPriceTextEditingController.text.isNotEmpty)
-      {
+  // Validate the form and upload item info
+  validateUploadForm() async {
+    if (imgXFile != null) {
+      if (itemInfoTextEditingController.text.isNotEmpty &&
+          itemTitleTextEditingController.text.isNotEmpty &&
+          itemDescriptionTextEditingController.text.isNotEmpty &&
+          itemPriceTextEditingController.text.isNotEmpty) {
         setState(() {
           uploading = true;
         });
 
-        //1. upload image to storage - get downloadUrl
         String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-
         fStorage.Reference storageRef = fStorage.FirebaseStorage.instance
             .ref()
-            .child("sellersItemsImages").child(fileName);
+            .child("sellersItemsImages")
+            .child(fileName);
 
         fStorage.UploadTask uploadImageTask = storageRef.putFile(File(imgXFile!.path));
-
         fStorage.TaskSnapshot taskSnapshot = await uploadImageTask.whenComplete(() {});
-
-        await taskSnapshot.ref.getDownloadURL().then((urlImage)
-        {
+        await taskSnapshot.ref.getDownloadURL().then((urlImage) {
           downloadUrlImage = urlImage;
         });
 
-        //2. save brand info to firestore database
-        saveBrandInfo();
-      }
-      else
-      {
+        saveItemInfo();
+      } else {
         Fluttertoast.showToast(msg: "Please fill complete form.");
       }
-    }
-    else
-    {
+    } else {
       Fluttertoast.showToast(msg: "Please choose image.");
     }
   }
 
-  uploadFormScreen()
-  {
+  // Screen for uploading items
+  uploadFormScreen() {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-          ),
-          onPressed: ()
-          {
-            Navigator.push(context, MaterialPageRoute(builder: (c)=> MySplashScreen()));
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (c) => MySplashScreen()));
           },
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(4.0),
             child: IconButton(
-              onPressed: ()
-              {
-                //validate upload form
-                uploading == true ? null : validateUploadForm();
+              onPressed: () {
+                uploading ? null : validateUploadForm();
               },
-              icon: const Icon(
-                Icons.cloud_upload,
-              ),
+              icon: const Icon(Icons.cloud_upload),
             ),
           ),
         ],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors:
-                [
-                  Colors.pinkAccent,
-                  Colors.purpleAccent,
-                ],
-                begin: FractionalOffset(0.0, 0.0),
-                end: FractionalOffset(1.0, 0.0),
-                stops: [0.0, 1.0],
-                tileMode: TileMode.clamp,
-              )
+            gradient: LinearGradient(
+              colors: [Colors.pinkAccent, Colors.purpleAccent],
+              begin: FractionalOffset(0.0, 0.0),
+              end: FractionalOffset(1.0, 0.0),
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp,
+            ),
           ),
         ),
-        title: const Text(
-            "Upload New Item"
-        ),
+        title: const Text("Upload New Item"),
         centerTitle: true,
       ),
       body: ListView(
         children: [
+          uploading ? linearProgressBar() : Container(),
 
-          uploading == true
-              ? linearProgressBar()
-              : Container(),
-
-          //image
+          // Image display
           SizedBox(
             height: 230,
             width: MediaQuery.of(context).size.width * 0.8,
             child: Center(
               child: AspectRatio(
-                aspectRatio: 16/9,
+                aspectRatio: 16 / 9,
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: FileImage(
-                        File(
-                          imgXFile!.path,
-                        ),
-                      ),
+                      image: FileImage(File(imgXFile!.path)),
                     ),
                   ),
                 ),
@@ -209,17 +154,11 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
             ),
           ),
 
-          const Divider(
-            color: Colors.pinkAccent,
-            thickness: 1,
-          ),
+          const Divider(color: Colors.pinkAccent, thickness: 1),
 
-          //brand info
+          // Item info input field
           ListTile(
-            leading: const Icon(
-              Icons.perm_device_information,
-              color: Colors.deepPurple,
-            ),
+            leading: const Icon(Icons.perm_device_information, color: Colors.deepPurple),
             title: SizedBox(
               width: 250,
               child: TextField(
@@ -232,17 +171,11 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
               ),
             ),
           ),
-          const Divider(
-            color: Colors.pinkAccent,
-            thickness: 1,
-          ),
+          const Divider(color: Colors.pinkAccent, thickness: 1),
 
-          //brand title
+          // Item title input field
           ListTile(
-            leading: const Icon(
-              Icons.title,
-              color: Colors.deepPurple,
-            ),
+            leading: const Icon(Icons.title, color: Colors.deepPurple),
             title: SizedBox(
               width: 250,
               child: TextField(
@@ -255,17 +188,11 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
               ),
             ),
           ),
-          const Divider(
-            color: Colors.pinkAccent,
-            thickness: 1,
-          ),
+          const Divider(color: Colors.pinkAccent, thickness: 1),
 
-          //item description
+          // Item description input field
           ListTile(
-            leading: const Icon(
-              Icons.description,
-              color: Colors.deepPurple,
-            ),
+            leading: const Icon(Icons.description, color: Colors.deepPurple),
             title: SizedBox(
               width: 250,
               child: TextField(
@@ -278,17 +205,11 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
               ),
             ),
           ),
-          const Divider(
-            color: Colors.pinkAccent,
-            thickness: 1,
-          ),
+          const Divider(color: Colors.pinkAccent, thickness: 1),
 
-          //item price
+          // Item price input field
           ListTile(
-            leading: const Icon(
-              Icons.camera,
-              color: Colors.deepPurple,
-            ),
+            leading: const Icon(Icons.camera, color: Colors.deepPurple),
             title: SizedBox(
               width: 250,
               child: TextField(
@@ -301,87 +222,63 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
               ),
             ),
           ),
-          const Divider(
-            color: Colors.pinkAccent,
-            thickness: 1,
-          ),
-
+          const Divider(color: Colors.pinkAccent, thickness: 1),
         ],
       ),
     );
   }
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return imgXFile == null ? defaultScreen() : uploadFormScreen();
   }
 
-  defaultScreen()
-  {
+  // Default screen with option to add new item
+  defaultScreen() {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors:
-                [
-                  Colors.pinkAccent,
-                  Colors.purpleAccent,
-                ],
-                begin: FractionalOffset(0.0, 0.0),
-                end: FractionalOffset(1.0, 0.0),
-                stops: [0.0, 1.0],
-                tileMode: TileMode.clamp,
-              )
-          ),
-        ),
-        title: const Text(
-            "Add New Item"
-        ),
-        centerTitle: true,
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors:
-              [
-                Colors.pinkAccent,
-                Colors.purpleAccent,
-              ],
+              colors: [Colors.pinkAccent, Colors.purpleAccent],
               begin: FractionalOffset(0.0, 0.0),
               end: FractionalOffset(1.0, 0.0),
               stops: [0.0, 1.0],
               tileMode: TileMode.clamp,
-            )
+            ),
+          ),
+        ),
+        title: const Text("Add New Item"),
+        centerTitle: true,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.pinkAccent, Colors.purpleAccent],
+            begin: FractionalOffset(0.0, 0.0),
+            end: FractionalOffset(1.0, 0.0),
+            stops: [0.0, 1.0],
+            tileMode: TileMode.clamp,
+          ),
         ),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
-              const Icon(
-                Icons.add_photo_alternate,
-                color: Colors.white,
-                size: 200,
-              ),
+              const Icon(Icons.add_photo_alternate, color: Colors.white, size: 200),
 
               ElevatedButton(
-                  onPressed: ()
-                  {
-                    obtainImageDialogBox();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
+                onPressed: () {
+                  obtainImageDialogBox();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  child: const Text(
-                    "Add New Item",
-                  )
+                ),
+                child: const Text("Add New Item"),
               ),
-
             ],
           ),
         ),
@@ -389,80 +286,63 @@ class _UploadItemsScreenState extends State<UploadItemsScreen>
     );
   }
 
-  obtainImageDialogBox()
-  {
+  // Dialog box for selecting image source
+  obtainImageDialogBox() {
     return showDialog(
-        context: context,
-        builder: (context)
-        {
-          return SimpleDialog(
-            title: const Text(
-              "Brand Image",
-              style: TextStyle(
-                color: Colors.deepPurple,
-                fontWeight: FontWeight.bold,
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: const Text(
+            "Item Image",
+            style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold),
+          ),
+          children: [
+            SimpleDialogOption(
+              onPressed: () {
+                captureImagewithPhoneCamera();
+              },
+              child: const Text(
+                "Capture image with Camera",
+                style: TextStyle(color: Colors.grey),
               ),
             ),
-            children: [
-              SimpleDialogOption(
-                onPressed: ()
-                {
-                  captureImagewithPhoneCamera();
-                },
-                child: const Text(
-                  "Capture image with Camera",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
+            SimpleDialogOption(
+              onPressed: () {
+                getImageFromGallery();
+              },
+              child: const Text(
+                "Select image from Gallery",
+                style: TextStyle(color: Colors.grey),
               ),
-              SimpleDialogOption(
-                onPressed: ()
-                {
-                  getImageFromGallery();
-                },
-                child: const Text(
-                  "Select image from Gallery",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "Cancel",
+                style: TextStyle(color: Colors.red),
               ),
-              SimpleDialogOption(
-                onPressed: ()
-                {
-
-                },
-                child: const Text(
-                  "Cancel",
-                  style: TextStyle(
-                    color: Colors.red,
-                  ),
-                ),
-              ),
-            ],
-          );
-        }
+            ),
+          ],
+        );
+      },
     );
   }
 
-  getImageFromGallery() async
-  {
+  // Capture image with phone camera
+  captureImagewithPhoneCamera() async {
     Navigator.pop(context);
-
-    imgXFile = await imagePicker.pickImage(source: ImageSource.gallery);
-
+    imgXFile = await imagePicker.pickImage(source: ImageSource.camera);
     setState(() {
       imgXFile;
     });
   }
 
-  captureImagewithPhoneCamera() async
-  {
+  // Select image from gallery
+  getImageFromGallery() async {
     Navigator.pop(context);
-
-    imgXFile = await imagePicker.pickImage(source: ImageSource.camera);
-
+    imgXFile = await imagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
       imgXFile;
     });
