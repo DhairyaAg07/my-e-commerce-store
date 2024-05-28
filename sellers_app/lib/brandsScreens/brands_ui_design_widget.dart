@@ -24,10 +24,9 @@ class _BrandsUiDesignWidgetState extends State<BrandsUiDesignWidget>
     return GestureDetector(
       onTap: ()
       {
-        Navigator.push(context, MaterialPageRoute(builder: (c)=>ItemsScreen(model: widget.model,
+        Navigator.push(context, MaterialPageRoute(builder: (c)=> ItemsScreen(
+          model: widget.model,
         )));
-        
-        
       },
       child: Card(
         elevation: 10,
@@ -39,15 +38,15 @@ class _BrandsUiDesignWidgetState extends State<BrandsUiDesignWidget>
             width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
-      
+
                 Image.network(
                   widget.model!.thumbnailUrl.toString(),
                   height: 220,
                   fit: BoxFit.cover,
                 ),
-      
+
                 const SizedBox(height: 1,),
-      
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -61,18 +60,18 @@ class _BrandsUiDesignWidgetState extends State<BrandsUiDesignWidget>
                       ),
                     ),
                     IconButton(
-                      onPressed: ()
-                      {
-      
-                      },
-                      icon: const Icon(
-                        Icons.delete_sweep,
-                        color: Colors.pinkAccent,
-                      ),
+                        onPressed: ()
+                        {
+
+                        },
+                        icon: const Icon(
+                          Icons.delete_sweep,
+                          color: Colors.pinkAccent,
+                        ),
                     ),
                   ],
                 ),
-      
+
               ],
             ),
           ),

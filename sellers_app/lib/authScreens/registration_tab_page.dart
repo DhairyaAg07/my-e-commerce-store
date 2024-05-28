@@ -5,14 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 
 import '../global/global.dart';
 import '../splashScreen/my_splash_screen.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/loading_dialog.dart';
-
 
 
 class RegistrationTabPage extends StatefulWidget
@@ -30,7 +28,7 @@ class _RegistrationTabPageState extends State<RegistrationTabPage>
   TextEditingController passwordTextEditingController = TextEditingController();
   TextEditingController confirmPasswordTextEditingController = TextEditingController();
   TextEditingController phoneTextEditingController = TextEditingController();
-  TextEditingController locationextEditingController = TextEditingController();
+  TextEditingController locationTextEditingController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String downloadUrlImage = "";
 
@@ -64,9 +62,9 @@ class _RegistrationTabPageState extends State<RegistrationTabPage>
         if(nameTextEditingController.text.isNotEmpty
             && emailTextEditingController.text.isNotEmpty
             && passwordTextEditingController.text.isNotEmpty
-            && confirmPasswordTextEditingController.text.isNotEmpty 
+            && confirmPasswordTextEditingController.text.isNotEmpty
             && phoneTextEditingController.text.isNotEmpty
-            && locationextEditingController.text.isNotEmpty)
+            && locationTextEditingController.text.isNotEmpty)
         {
           showDialog(
               context: context,
@@ -147,10 +145,9 @@ class _RegistrationTabPageState extends State<RegistrationTabPage>
           "name": nameTextEditingController.text.trim(),
           "photoUrl": downloadUrlImage,
           "phone": phoneTextEditingController.text.trim(),
-          "address":locationextEditingController.text.trim(),
+          "address": locationTextEditingController.text.trim(),
           "status": "approved",
-          "earnings":0.0,
-          
+          "earnings": 0.0,
         });
     
     //save locally
@@ -231,7 +228,7 @@ class _RegistrationTabPageState extends State<RegistrationTabPage>
                     enabled: true,
                   ),
 
-                  //confirm password
+                  //confirm pass
                   CustomTextField(
                     textEditingController: confirmPasswordTextEditingController,
                     iconData: Icons.lock,
@@ -239,8 +236,8 @@ class _RegistrationTabPageState extends State<RegistrationTabPage>
                     isObsecre: true,
                     enabled: true,
                   ),
-                  
-                  // phone
+
+                  //phone
                   CustomTextField(
                     textEditingController: phoneTextEditingController,
                     iconData: Icons.lock,
@@ -248,11 +245,10 @@ class _RegistrationTabPageState extends State<RegistrationTabPage>
                     isObsecre: false,
                     enabled: true,
                   ),
-                  
-                  // location
 
+                  //location
                   CustomTextField(
-                    textEditingController: locationextEditingController,
+                    textEditingController: locationTextEditingController,
                     iconData: Icons.lock,
                     hintText: "Address",
                     isObsecre: false,

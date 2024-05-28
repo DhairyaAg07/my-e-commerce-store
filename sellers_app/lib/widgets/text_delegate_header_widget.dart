@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 class TextDelegateHeaderWidget extends SliverPersistentHeaderDelegate
 {
   String? title;
-  TextDelegateHeaderWidget({this.title});
-  
+  TextDelegateHeaderWidget({this.title,});
+
   @override
-  Widget build(BuildContext context,double shrinkOffset, bool overlapsContent,)
+  Widget build(BuildContext context, double shrinkOffSet, bool overlapsContent,)
   {
     return InkWell(
       child: Container(
@@ -52,6 +52,7 @@ class TextDelegateHeaderWidget extends SliverPersistentHeaderDelegate
   double get minExtent => 50;
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate)=> true;
-  
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
+
+
 }

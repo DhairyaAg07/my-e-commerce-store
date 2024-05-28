@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../global/global.dart';
 import '../splashScreen/my_splash_screen.dart';
-// import 'package:users_app/authScreens/auth_screen.dart';
-// import 'package:users_app/global/global.dart';
-// import 'package:users_app/splashScreen/my_splash_screen.dart';
 
 
 class MyDrawer extends StatefulWidget

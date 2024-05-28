@@ -50,14 +50,14 @@ class _HomeScreenState extends State<HomeScreen>
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: ()
-            {
-              Navigator.push(context, MaterialPageRoute(builder: (c)=> UploadBrandsScreen()));
-            },
-            icon: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
+              onPressed: ()
+              {
+                Navigator.push(context, MaterialPageRoute(builder: (c)=> UploadBrandsScreen()));
+              },
+              icon: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
           ),
         ],
       ),
@@ -82,27 +82,27 @@ class _HomeScreenState extends State<HomeScreen>
             builder: (context, AsyncSnapshot dataSnapshot)
             {
               if(dataSnapshot.hasData) //if brands exists
-                  {
+              {
                 //display brands
                 return SliverStaggeredGrid.countBuilder(
-                  crossAxisCount: 1,
-                  staggeredTileBuilder: (c)=> const StaggeredTile.fit(1),
-                  itemBuilder: (context, index)
-                  {
-                    Brands brandsModel = Brands.fromJson(
-                      dataSnapshot.data.docs[index].data() as Map<String, dynamic>,
-                    );
+                    crossAxisCount: 1,
+                    staggeredTileBuilder: (c)=> const StaggeredTile.fit(1),
+                    itemBuilder: (context, index)
+                    {
+                      Brands brandsModel = Brands.fromJson(
+                        dataSnapshot.data.docs[index].data() as Map<String, dynamic>,
+                      );
 
-                    return BrandsUiDesignWidget(
-                      model: brandsModel,
-                      context: context,
-                    );
-                  },
-                  itemCount: dataSnapshot.data.docs.length,
+                      return BrandsUiDesignWidget(
+                        model: brandsModel,
+                        context: context,
+                      );
+                    },
+                    itemCount: dataSnapshot.data.docs.length,
                 );
               }
               else //if brands NOT exists
-                  {
+              {
                 return const SliverToBoxAdapter(
                   child: Center(
                     child: Text(

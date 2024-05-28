@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sellers_app/authScreens/registration_tab_page.dart';
 
 import 'login_tab_page.dart';
-// import 'package:users_app/authScreens/login_tab_page.dart';
-// import 'package:users_app/authScreens/registration_tab_page.dart';
+
 
 class AuthScreen extends StatefulWidget
 {

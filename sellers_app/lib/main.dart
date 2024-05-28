@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:users_app/authScreens/auth_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
-// import 'package:users_app/global/global.dart';
 import 'package:sellers_app/splashScreen/my_splash_screen.dart';
-import 'firebase_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'global/global.dart';
+
 
 Future<void> main()  async
 {
@@ -13,9 +11,7 @@ Future<void> main()  async
 
   sharedPreferences = await SharedPreferences.getInstance();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
 
   runApp(const MyApp());
 }

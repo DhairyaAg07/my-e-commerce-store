@@ -5,31 +5,38 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sellers_app/brandsScreens/home_screen.dart';
 import 'package:sellers_app/global/global.dart';
+import 'package:sellers_app/models/brands.dart';
 import 'package:sellers_app/splashScreen/my_splash_screen.dart';
 import 'package:sellers_app/widgets/progress_bar.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 
 
-class UploadBrandsScreen extends StatefulWidget
+class UploadItemsScreen extends StatefulWidget
 {
+  Brands? model;
+
+  UploadItemsScreen({this.model,});
+
   @override
-  State<UploadBrandsScreen> createState() => _UploadBrandsScreenState();
+  State<UploadItemsScreen> createState() => _UploadItemsScreenState();
 }
 
 
 
 
-class _UploadBrandsScreenState extends State<UploadBrandsScreen>
+class _UploadItemsScreenState extends State<UploadItemsScreen>
 {
   XFile? imgXFile;
   final ImagePicker imagePicker = ImagePicker();
 
-  TextEditingController brandInfoTextEditingController = TextEditingController();
-  TextEditingController brandTitleTextEditingController = TextEditingController();
+  TextEditingController itemInfoTextEditingController = TextEditingController();
+  TextEditingController itemTitleTextEditingController = TextEditingController();
+  TextEditingController itemDescriptionTextEditingController = TextEditingController();
+  TextEditingController itemPriceTextEditingController = TextEditingController();
 
   bool uploading = false;
   String downloadUrlImage = "";
-  String brandUniqueId = DateTime.now().millisecondsSinceEpoch.toString();
+  String itemUniqueId = DateTime.now().millisecondsSinceEpoch.toString();
 
 
   saveBrandInfo()
@@ -38,21 +45,45 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
         .collection("sellers")
         .doc(sharedPreferences!.getString("uid"))
         .collection("brands")
-        .doc(brandUniqueId)
+        .doc(widget.model!.brandID)
+        .collection("items")
+        .doc(itemUniqueId)
         .set(
         {
-          "brandID": brandUniqueId,
+          "itemID": itemUniqueId,
+          "brandID": widget.model!.brandID.toString(),
           "sellerUID": sharedPreferences!.getString("uid"),
-          "brandInfo": brandInfoTextEditingController.text.trim(),
-          "brandTitle": brandTitleTextEditingController.text.trim(),
+          "sellerName": sharedPreferences!.getString("name"),
+          "itemInfo": itemInfoTextEditingController.text.trim(),
+          "itemTitle": itemTitleTextEditingController.text.trim(),
+          "longDescription": itemInfoTextEditingController.text.trim(),
+          "price": itemTitleTextEditingController.text.trim(),
           "publishedDate": DateTime.now(),
           "status": "available",
           "thumbnailUrl": downloadUrlImage,
-        });
+        }).then((value)
+    {
+      FirebaseFirestore.instance
+          .collection("items")
+          .doc(itemUniqueId)
+          .set(
+          {
+            "itemID": itemUniqueId,
+            "brandID": widget.model!.brandID.toString(),
+            "sellerUID": sharedPreferences!.getString("uid"),
+            "sellerName": sharedPreferences!.getString("name"),
+            "itemInfo": itemInfoTextEditingController.text.trim(),
+            "itemTitle": itemTitleTextEditingController.text.trim(),
+            "longDescription": itemInfoTextEditingController.text.trim(),
+            "price": itemTitleTextEditingController.text.trim(),
+            "publishedDate": DateTime.now(),
+            "status": "available",
+            "thumbnailUrl": downloadUrlImage,
+          });
+    });
 
     setState(() {
       uploading = false;
-      brandUniqueId = DateTime.now().millisecondsSinceEpoch.toString();
     });
 
     Navigator.push(context, MaterialPageRoute(builder: (c)=> HomeScreen()));
@@ -62,8 +93,10 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
   {
     if(imgXFile != null)
     {
-      if(brandInfoTextEditingController.text.isNotEmpty
-          && brandTitleTextEditingController.text.isNotEmpty)
+      if(itemInfoTextEditingController.text.isNotEmpty
+          && itemTitleTextEditingController.text.isNotEmpty
+          && itemDescriptionTextEditingController.text.isNotEmpty
+          && itemPriceTextEditingController.text.isNotEmpty)
       {
         setState(() {
           uploading = true;
@@ -74,7 +107,7 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
 
         fStorage.Reference storageRef = fStorage.FirebaseStorage.instance
             .ref()
-            .child("sellersBrandsImages").child(fileName);
+            .child("sellersItemsImages").child(fileName);
 
         fStorage.UploadTask uploadImageTask = storageRef.putFile(File(imgXFile!.path));
 
@@ -90,7 +123,7 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
       }
       else
       {
-        Fluttertoast.showToast(msg: "Please write brand info and brand title.");
+        Fluttertoast.showToast(msg: "Please fill complete form.");
       }
     }
     else
@@ -105,7 +138,7 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(
-              Icons.arrow_back_rounded,
+            Icons.arrow_back_rounded,
           ),
           onPressed: ()
           {
@@ -116,14 +149,14 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
           Padding(
             padding: const EdgeInsets.all(4.0),
             child: IconButton(
-                onPressed: ()
-                {
-                  //validate upload form
-                  uploading == true ? null : validateUploadForm();
-                },
-                icon: const Icon(
-                  Icons.cloud_upload,
-                ),
+              onPressed: ()
+              {
+                //validate upload form
+                uploading == true ? null : validateUploadForm();
+              },
+              icon: const Icon(
+                Icons.cloud_upload,
+              ),
             ),
           ),
         ],
@@ -143,7 +176,7 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
           ),
         ),
         title: const Text(
-            "Upload New Brand"
+            "Upload New Item"
         ),
         centerTitle: true,
       ),
@@ -190,9 +223,9 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
             title: SizedBox(
               width: 250,
               child: TextField(
-                controller: brandInfoTextEditingController,
+                controller: itemInfoTextEditingController,
                 decoration: const InputDecoration(
-                  hintText: "brand info",
+                  hintText: "item info",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: InputBorder.none,
                 ),
@@ -213,9 +246,55 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
             title: SizedBox(
               width: 250,
               child: TextField(
-                controller: brandTitleTextEditingController,
+                controller: itemTitleTextEditingController,
                 decoration: const InputDecoration(
-                  hintText: "brand title",
+                  hintText: "item title",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          const Divider(
+            color: Colors.pinkAccent,
+            thickness: 1,
+          ),
+
+          //item description
+          ListTile(
+            leading: const Icon(
+              Icons.description,
+              color: Colors.deepPurple,
+            ),
+            title: SizedBox(
+              width: 250,
+              child: TextField(
+                controller: itemDescriptionTextEditingController,
+                decoration: const InputDecoration(
+                  hintText: "item description",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          const Divider(
+            color: Colors.pinkAccent,
+            thickness: 1,
+          ),
+
+          //item price
+          ListTile(
+            leading: const Icon(
+              Icons.camera,
+              color: Colors.deepPurple,
+            ),
+            title: SizedBox(
+              width: 250,
+              child: TextField(
+                controller: itemPriceTextEditingController,
+                decoration: const InputDecoration(
+                  hintText: "item price",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: InputBorder.none,
                 ),
@@ -243,27 +322,7 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors:
-                  [
-                    Colors.pinkAccent,
-                    Colors.purpleAccent,
-                  ],
-                  begin: FractionalOffset(0.0, 0.0),
-                  end: FractionalOffset(1.0, 0.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp,
-                )
-            ),
-        ),
-        title: const Text(
-          "Add New Brand"
-        ),
-        centerTitle: true,
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
+          decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors:
                 [
@@ -276,13 +335,33 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
                 tileMode: TileMode.clamp,
               )
           ),
+        ),
+        title: const Text(
+            "Add New Item"
+        ),
+        centerTitle: true,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors:
+              [
+                Colors.pinkAccent,
+                Colors.purpleAccent,
+              ],
+              begin: FractionalOffset(0.0, 0.0),
+              end: FractionalOffset(1.0, 0.0),
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp,
+            )
+        ),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
               const Icon(
-                Icons.add_photo_alternate_outlined,
+                Icons.add_photo_alternate,
                 color: Colors.white,
                 size: 200,
               ),
@@ -299,7 +378,7 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
                     ),
                   ),
                   child: const Text(
-                    "Add New Brand",
+                    "Add New Item",
                   )
               ),
 
@@ -331,7 +410,7 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
                   captureImagewithPhoneCamera();
                 },
                 child: const Text(
-                    "Capture image with Camera",
+                  "Capture image with Camera",
                   style: TextStyle(
                     color: Colors.grey,
                   ),
