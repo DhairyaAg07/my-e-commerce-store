@@ -277,7 +277,12 @@ class _UploadItemsScreenState extends State<UploadItemsScreen> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child: const Text("Add New Item"),
+                child: const Text(
+                  "Add New Item",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),

@@ -298,9 +298,12 @@ class _UploadBrandsScreenState extends State<UploadBrandsScreen>
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text(
-                    "Add New Brand",
-                  )
+                child: const Text(
+                  "Add New Brand",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               ),
 
             ],
