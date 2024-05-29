@@ -1,3 +1,25 @@
+# Detect Dart files
 *.dart linguist-language=Dart
+
+# Makefile extensions
+*.mak linguist-detectable=false
+*.d linguist-detectable=false
+*.make linguist-detectable=false
 *.makefile linguist-detectable=false
-*.Makefile linguist-detectable=false
+*.mk linguist-detectable=false
+*.mkfile linguist-detectable=false
+
+# Makefile filenames
+BSDmakefile linguist-detectable=false
+GNUmakefile linguist-detectable=false
+Kbuild linguist-detectable=false
+Makefile linguist-detectable=false
+Makefile.am linguist-detectable=false
+Makefile.boot linguist-detectable=false
+Makefile.frag linguist-detectable=false
+Makefile.in linguist-detectable=false
+Makefile.inc linguist-detectable=false
+Makefile.wat linguist-detectable=false
+makefile linguist-detectable=false
+makefile.sco linguist-detectable=false
+mkfile linguist-detectable=false
