@@ -43,7 +43,8 @@ app.*.map.json
 /android/app/release
 
 # Google Sign in related
-lib/firebase_options.dart
+sellers_app/lib/firebase_options.dart
+users_app/lib/firebase_options.dart
 
 #validity related
 lib/login_verification.dart
