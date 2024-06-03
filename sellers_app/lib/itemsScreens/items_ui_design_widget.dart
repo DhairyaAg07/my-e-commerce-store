@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sellers_app/itemsScreens/items_details_screen.dart';
 import 'package:sellers_app/models/items.dart';
 
 class ItemsUiDesignWidget extends StatefulWidget {
@@ -16,9 +17,9 @@ class _ItemsUiDesignWidgetState extends State<ItemsUiDesignWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.push(context, MaterialPageRoute(builder: (c)=> ItemsScreen(
-        //   model: widget.model,
-        // )));
+        Navigator.push(context, MaterialPageRoute(builder: (c)=> ItemsDetailsScreen(
+          model: widget.model,
+        )));
       },
       child: Card(
         elevation: 10,
