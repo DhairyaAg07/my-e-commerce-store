@@ -17,7 +17,7 @@ class _MySplashScreenState extends State<MySplashScreen>
 {
   splashScreenTimer()
   {
-    Timer(const Duration(seconds: 4), () async
+    Timer(const Duration(seconds: 3), () async
     {
       //seller is already logged-in
       if(FirebaseAuth.instance.currentUser != null)

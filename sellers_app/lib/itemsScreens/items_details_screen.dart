@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sellers_app/splashScreen/my_splash_screen.dart';
 
+import '../global/global.dart';
 import '../models/items.dart';
 
 class ItemsDetailsScreen extends StatefulWidget 
@@ -12,6 +16,27 @@ class ItemsDetailsScreen extends StatefulWidget
 
 class _ItemsDetailsScreenState extends State<ItemsDetailsScreen> 
 {
+  deleteItem()
+  {
+    FirebaseFirestore.instance
+        .collection("sellers")
+        .doc(sharedPreferences!.getString("uid"))
+        .collection("brands")
+        .doc(widget.model!.brandID)
+        .collection("items")
+        .doc(widget.model!.itemID)
+        .delete().then((value)
+    {
+      FirebaseFirestore
+          .instance.collection("items")
+          .doc(widget.model!.itemID)
+          .delete();
+      
+      Fluttertoast.showToast(msg: "Item deleted successfuly.");
+      Navigator.push(context, MaterialPageRoute(builder: (c)=> MySplashScreen()));
+    });
+  }
+  
   @override
   Widget build(BuildContext context) 
   {
@@ -39,7 +64,7 @@ class _ItemsDetailsScreenState extends State<ItemsDetailsScreen>
       floatingActionButton: FloatingActionButton.extended(
           onPressed: ()
           {
-            
+            deleteItem();
           }, 
           label: const Text(
             "Delete this item"

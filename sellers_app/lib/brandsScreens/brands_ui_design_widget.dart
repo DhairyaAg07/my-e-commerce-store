@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sellers_app/itemsScreens/items_screen.dart';
 import 'package:sellers_app/models/brands.dart';
+
+import '../global/global.dart';
+import '../splashScreen/my_splash_screen.dart';
 
 class BrandsUiDesignWidget extends StatefulWidget
 {
@@ -18,6 +24,18 @@ class BrandsUiDesignWidget extends StatefulWidget
 
 class _BrandsUiDesignWidgetState extends State<BrandsUiDesignWidget>
 {
+  
+  deleteBrand(String brandUniqueID)
+  {
+    FirebaseFirestore.instance
+        .collection("sellers")
+        .doc(sharedPreferences!.getString("uid"))
+        .collection("brands")
+        .doc(brandUniqueID)
+        .delete();
+    Fluttertoast.showToast(msg: "Brand Deleted Successfully");
+    Navigator.push(context, MaterialPageRoute(builder: (c)=> MySplashScreen()));
+  }
   @override
   Widget build(BuildContext context)
   {
@@ -62,7 +80,7 @@ class _BrandsUiDesignWidgetState extends State<BrandsUiDesignWidget>
                     IconButton(
                         onPressed: ()
                         {
-
+                          deleteBrand(widget.model!.brandID.toString());
                         },
                         icon: const Icon(
                           Icons.delete_sweep,
