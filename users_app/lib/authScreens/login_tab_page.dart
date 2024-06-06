@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:users_app/splashScreen/my_splash_screen.dart';
 
 import '../global/global.dart';
-import '../mainScreens/home_screen.dart';
+import '../sellersScreens/home_screen.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/loading_dialog.dart';
 

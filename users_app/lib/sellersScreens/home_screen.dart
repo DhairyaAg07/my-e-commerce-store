@@ -1,7 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:users_app/global/global.dart';
+import 'package:users_app/sellersScreens/sellers_ui_design_widget.dart';
 import 'package:users_app/widgets/my_drawer.dart';
+
+import '../models/sellers.dart';
 
 
 class HomeScreen extends StatefulWidget
@@ -92,6 +97,50 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
           ),
+          
+        //   query
+        //   model
+        //   design widget
+          
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection("sellers")
+                .snapshots(),
+            builder: (context, AsyncSnapshot dataSnapshot)
+            {
+              if(dataSnapshot.hasData)
+              {
+                return SliverStaggeredGrid.countBuilder(
+                  crossAxisCount: 1,
+                  staggeredTileBuilder: (c)=>StaggeredTile.fit(1),
+                  itemBuilder: (context,index)
+                  {
+                    Sellers model =Sellers.fromJson(
+                      dataSnapshot.data.docs[index].data() as Map<String, dynamic>
+                    );
+                    
+                    return SellersUIDesignWidget(
+                      model: model,
+                    );
+                  },
+                  itemCount: dataSnapshot.data.docs.length,
+                  
+                );
+              }
+              else
+              {
+                return const SliverToBoxAdapter(
+                  child: Center(
+                    child: Text(
+                      "No Sellers Data exist"
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+          
+          
         ],
       ),
     );
