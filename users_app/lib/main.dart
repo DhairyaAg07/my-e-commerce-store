@@ -4,7 +4,6 @@ import 'package:users_app/authScreens/auth_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:users_app/global/global.dart';
 import 'package:users_app/splashScreen/my_splash_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 Future<void> main()  async
